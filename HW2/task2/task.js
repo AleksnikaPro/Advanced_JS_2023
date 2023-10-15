@@ -81,20 +81,10 @@ function renderAllReviews(radio) {
             for (let i = 0; i < review.reviews.length; i++) {
                 const element = review.reviews[i];
 
-                const reviewItem = document.createElement('div');
-                reviewItem.classList.add('reviews_item');
+                let receivedReview = createReview(nameOfProduct, element.user, element.text);
 
-                const reviewUser = document.createElement('p');
-                reviewUser.textContent = 'Покупатель: ' + element.user;
-
-
-                const reviewText = document.createElement('p');
-                reviewText.textContent = 'Текст отзыва: ' + element.text;
-
-                reviewItem.append(reviewUser);
-                reviewItem.append(reviewText);
-                reviewsItems.append(reviewItem);
-                sectionOfReviews.append(reviewsItems);
+                let receivedReviewsItems = renderReview(receivedReview);
+                sectionOfReviews.append(receivedReviewsItems);
             }
         }
     });
@@ -110,7 +100,11 @@ makeReviewButton.addEventListener("click", (event) => {
     let nameOfClient = getUserName();
     let textOfReview = getReviewText();
 
-    createNewReview(nameOfProduct, nameOfClient, textOfReview);
+    let createdNewReview = createReview(nameOfProduct, nameOfClient, textOfReview);
+
+    console.log(createdNewReview);
+    renderReview(createdNewReview);
+    saveReview(createdNewReview);
     resetForm();
 });
 
@@ -167,20 +161,18 @@ function getReviewText() {
     }
 }
 
-function createNewReview(product, name, text) {
+function createReview(product, name, text) {
     if (product && name && text) {
         let newReview = {
             id: ++globalId,
             user: name,
             text: text
         }
-        renderNewReview(newReview);
-        saveNewReview(newReview);
-        console.log(initialData);
+        return newReview;
     }
 }
 
-function saveNewReview(review) {
+function saveReview(review) {
     const reviewForSaving = review;
     const nameOfProduct = getProductName();
 
@@ -191,7 +183,7 @@ function saveNewReview(review) {
     }
 }
 
-function renderNewReview(review) {
+function renderReview(review) {
     const reviewsItems = document.querySelector('.reviews_items');
     const reviewItem = document.createElement('div');
     reviewItem.classList.add('reviews_item');
@@ -205,4 +197,11 @@ function renderNewReview(review) {
     reviewItem.append(reviewUser);
     reviewItem.append(reviewText);
     reviewsItems.append(reviewItem);
+
+    return reviewsItems;
 }
+
+
+
+
+
